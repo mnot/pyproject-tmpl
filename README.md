@@ -8,6 +8,7 @@ This is a GitHub template repository for Makefile-driven Python projects. It:
 * Has targets that bump versions for both [Semantic Versioning](https://semver.org/) and [Calendar Versioning](https://calver.org/);
 * Uses GitHub Actions to build releases and publish them to PyPi [automatically](https://docs.pypi.org/trusted-publishers/) when a version tag is pushed;
 * Runs `lint`, `typecheck`, and `test` upon push using GitHub Actions;
+* Turns on [Dependabot](https://docs.github.com/en/code-security/dependabot) for `github-actions` and `pip`.
 
 ## Use
 
