@@ -71,7 +71,7 @@ disable = "C0114,C0115,C0116,W0613"
 reports = false
 
 [tool.pylint.variables]
-dummy-variables-rgx = "response_start|response_body|response_done|error|formatter_done|check_done|_"
+dummy-variables-rgx = "_"
 
 [tool.pylint.design]
 max-args=10
