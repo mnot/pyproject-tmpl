@@ -14,8 +14,8 @@ This is a GitHub template repository for Makefile-driven Python projects. It:
 
 Create a repo using the template, and then:
 
-* In each file, replace `SHORTNAME` with the name of the project, as published on PyPi;
-* Likewise, change the top-level `SHORTNAME` directory name to the name of the project;
-* Update `Makefile`, `pyproject.toml` and `requirements.txt` to suit;
-* Change this `README.md` to suit;
-* Write some code.
+1. In each file, replace `SHORTNAME` with the name of the project, as published on PyPi;
+2. Likewise, change the top-level `SHORTNAME` directory name to the name of the project;
+3. Update `Makefile`, `pyproject.toml` and `requirements.txt` to suit;
+4. Change this `README.md` to suit;
+5. Write some code.
