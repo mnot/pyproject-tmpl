@@ -15,11 +15,11 @@ classifiers = [
 dependencies = [
 ]
 
-[project.urls]
-homepage = "PROJECT_URL"
-
 [project.optional-dependencies]
 dev = ["mypy", "black", "pylint", "pytest", "pytest-md", "validate-pyproject", "build"]
+
+[project.urls]
+homepage = "PROJECT_URL"
 
 [project.scripts]
 
