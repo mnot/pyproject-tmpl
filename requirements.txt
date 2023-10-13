@@ -1,7 +1,0 @@
-pylint
-mypy
-black
-build
-pytest
-pytest-md
-validate-pyproject
