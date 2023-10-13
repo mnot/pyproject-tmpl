@@ -19,7 +19,7 @@ dependencies = [
 homepage = "PROJECT_URL"
 
 [project.optional-dependencies]
-dev = ["mypy", "black", "pylint", "pytest", "pytest-md", "validate-pyproject"]
+dev = ["mypy", "black", "pylint", "pytest", "pytest-md", "validate-pyproject", "build"]
 
 [project.scripts]
 
