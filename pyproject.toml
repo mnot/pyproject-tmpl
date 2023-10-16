@@ -1,10 +1,11 @@
 [project]
 name = "SHORTNAME"
-dynamic = ["version", "readme"]
+dynamic = ["version"]
 authors = [
     {name="Mark Nottingham", email="mnot@mnot.net"}
 ]
 description = "DESCRIPTION"
+readme = "README.md"
 requires-python = ">=3.9"
 license = {file = "LICENSE.md"}
 classifiers = [
@@ -33,7 +34,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 version = {attr = "SHORTNAME.__version__"}
-readme = {file = ["README.md"], content-type = "text/markdown"}
 
 [tool.setuptools.packages.find]
 where = ["."]
