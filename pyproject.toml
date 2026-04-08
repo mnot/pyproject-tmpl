@@ -7,11 +7,11 @@ authors = [
 description = "DESCRIPTION"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {file = "LICENSE.md"}
+license = "MIT"
+license-files = ["LICENSE.md"]
 classifiers = [
     "Operating System :: OS Independent",
-    "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: MIT License"
+    "Development Status :: 4 - Beta"
 ]
 dependencies = [
 ]
@@ -37,6 +37,8 @@ version = {attr = "SHORTNAME.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["SHORTNAME", "SHORTNAME.*"]
+namespaces = false
 
 [tool.setuptools]
 include-package-data = true

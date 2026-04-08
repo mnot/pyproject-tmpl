@@ -1,1 +1,8 @@
 include SHORTNAME/py.typed
+prune build
+prune dist
+prune test
+prune tools
+prune src
+prune *.egg-info
+exclude .gitignore .editorconfig .dockerignore .coveragerc
