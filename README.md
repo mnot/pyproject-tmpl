@@ -11,14 +11,11 @@ This is a GitHub template repository for Makefile-driven Python projects. It:
 * Turns on [Dependabot](https://docs.github.com/en/code-security/dependabot) for `github-actions` and `pip`.
 
 ## Use
+ 
+ Create a repo using the template, and then:
+ 
+ 1. Run `make bootstrap` and follow the prompts.
+ 2. Change this `README.md` to suit;
+ 3. Update `Makefile` and `pyproject.toml` to suit;
+ 4. Write some code.
 
-Create a repo using the template, and then:
-
-1. In **all** files, replace:
-  1. `SHORTNAME` with the name of the project, as published on PyPi
-  2. `DESCRIPTION` with a textual description of the project
-  3. `PROJECT_URL` with a URL to the project home
-2. Change the top-level `SHORTNAME` directory name to the name of the project;
-3. Update `Makefile`, `pyproject.toml` and `requirements.txt` to suit;
-4. Change this `README.md` to suit;
-5. Write some code.

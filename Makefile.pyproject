@@ -136,6 +136,17 @@ release: py_version changelog.md
 	git push --tags origin  # github action will push to pypi and create a release
 
 
+.PHONY: bootstrap
+bootstrap:
+	@if [ ! -d SHORTNAME ]; then echo "Already bootstrapped."; exit 1; fi
+	@read -p "Project Name (e.g., myproject): " NAME; \
+	read -p "Description: " DESC; \
+	read -p "Project URL: " URL; \
+	find . -type f -not -path './.git/*' -not -name 'Makefile.pyproject' -exec sed -i "" -e "s,SHORTNAME,$$NAME,g" -e "s,DESCRIPTION,$$DESC,g" -e "s,PROJECT_URL,$$URL,g" {} +; \
+	mv SHORTNAME $$NAME; \
+	echo "Project initialized as $$NAME."
+
+
 include Makefile.venv
 
 ## Patch venv to install from pyproject.toml
