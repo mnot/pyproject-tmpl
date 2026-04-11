@@ -38,6 +38,7 @@ version = {attr = "SHORTNAME.__version__"}
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["SHORTNAME", "SHORTNAME.*"]
+exclude = ["build*", "dist*"]
 namespaces = false
 
 [tool.setuptools]
