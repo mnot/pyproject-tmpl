@@ -9,7 +9,7 @@ By contributing code, bugs or enhancements to this project (whether that be thro
 
 ## Coding Conventions
 
-We use [black](https://pypi.org/project/black/) for Python formatting, which can be run with `make tidy`.
+We use [isort](https://pypi.org/project/isort/) and [black](https://pypi.org/project/black/) for Python formatting, which can be run with `make tidy`.
 
 All Python functions and methods need to have type annotations. See `pyproject.toml` for specific pylint and mypy settings.
 

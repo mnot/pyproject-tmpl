@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["mypy", "black", "pylint", "pytest", "pytest-md", "validate-pyproject", "build"]
+dev = ["mypy", "black", "isort", "pylint", "pytest", "pytest-md", "validate-pyproject", "build"]
 
 [project.urls]
 homepage = "PROJECT_URL"
@@ -78,3 +78,6 @@ min-public-methods=1
 
 [tool.pylint.similarities]
 min-similarity-lines = 10
+
+[tool.isort]
+profile = "black"

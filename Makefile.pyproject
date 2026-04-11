@@ -12,7 +12,7 @@
 # clean_py
 #     Clean Python-related temporary files
 # tidy_py
-#     Run black on Python files in $PROJECT
+#     Run isort and black on Python files in $PROJECT
 # lint_py
 #     Run pylint on $PROJECT, and validate pyproject.toml
 # typecheck_py
@@ -31,14 +31,7 @@
 #     Release the project on Pypi and Github releases (requires /.github/workflows/release.yml)
 #
 # See also Makefile.venv.
-#
-#
-# Make sure the following are in requirements.txt:
-# - pylint
-# - mypy
-# - black
-# - build
-# - validate-pyproject
+
 
 PY?=python
 VERSIONING?=semver-micro
@@ -54,6 +47,7 @@ clean_py: clean-venv
 
 .PHONY: tidy_py
 tidy_py: venv
+	$(VENV)/isort $(PROJECT)
 	$(VENV)/black $(PROJECT)
 
 .PHONY: lint_py
