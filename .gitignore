@@ -12,5 +12,3 @@ __pycache__
 /.venv
 /*.egg-info
 # === pyproject-tmpl: end managed region ===
-
-# Add project-specific patterns below this line.

@@ -21,5 +21,3 @@ indent_size = 2
 [*.html]
 max_line_length = unset
 # === pyproject-tmpl: end managed region ===
-
-# Add project-specific sections below this line.
