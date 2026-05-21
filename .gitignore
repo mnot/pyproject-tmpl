@@ -1,3 +1,4 @@
+# === pyproject-tmpl: managed region (do not edit; overwritten by `make update`) ===
 *.pyc
 __pycache__
 .DS_Store
@@ -10,3 +11,6 @@ __pycache__
 /.pytest_cache
 /.venv
 /*.egg-info
+# === pyproject-tmpl: end managed region ===
+
+# Add project-specific patterns below this line.

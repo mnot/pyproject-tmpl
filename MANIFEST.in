@@ -1,4 +1,4 @@
-include SHORTNAME/py.typed
+global-include py.typed
 prune build
 prune dist
 prune test

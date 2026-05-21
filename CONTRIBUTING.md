@@ -11,12 +11,12 @@ By contributing code, bugs or enhancements to this project (whether that be thro
 
 We use [isort](https://pypi.org/project/isort/) and [black](https://pypi.org/project/black/) for Python formatting, which can be run with `make tidy`.
 
-All Python functions and methods need to have type annotations. See `pyproject.toml` for specific pylint and mypy settings.
+All Python functions and methods need to have type annotations. See `.pylintrc` and `mypy.ini` for specific pylint and mypy settings.
 
 
 ## Setting up a Development Environment
 
-It should be possible to use modern Unix-like environment, provided that a recent release of Python is installed.
+It should be possible to use a modern Unix-like environment, provided that a recent release of Python is installed.
 
 Thanks to [Makefile.venv](https://github.com/sio/Makefile.venv), a Python virtual environment is set up and run each time you use `make`. As long as you use `make`, Python dependencies will be installed automatically.
 
@@ -24,7 +24,7 @@ Helpful make targets include:
 
 * `make shell` - start a shell in the Python virtual environment
 * `make python` - start an interactive Python interpreter in the virtual environment
-* `make lint` - run pylint with REDbot-specific configuration
+* `make lint` - run pylint
 * `make typecheck` - run mypy to check Python types
 * `make tidy` - format Python source
 * `make test` - run the tests
@@ -37,7 +37,6 @@ The best way to submit a change is through a pull request. A few things to keep 
 * Run `make tidy`.
 * Check your code with `make lint` and address any issues found.
 * Check your code with `make typecheck` and address any issues found.
-* Every new field and every new `Note` should have a test covering it.
+* Every new feature should have a test covering it.
 
 If you're not sure how to dig in, feel free to ask for help, or sketch out an idea in an issue first.
-

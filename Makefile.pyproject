@@ -1,3 +1,4 @@
+# DO NOT EDIT — managed by https://github.com/mnot/pyproject-tmpl, overwritten by `make update`.
 #
 # Common Makefile for Python projects
 #
@@ -29,6 +30,8 @@
 #     Publish the project to pypi
 # release <<< TAGS AND PUSHES TO GITHUB
 #     Release the project on Pypi and Github releases (requires /.github/workflows/release.yml)
+# update-pyproject
+#     Refresh template-managed files in place from the pyproject-tmpl repo.
 #
 # See also Makefile.venv.
 
@@ -128,6 +131,64 @@ release: py_version changelog.md
 	rm -f changelog.md
 	git push
 	git push --tags origin  # github action will push to pypi and create a release
+
+
+## Template self-update
+
+TEMPLATE_REPO?=mnot/pyproject-tmpl
+TEMPLATE_BRANCH?=main
+TEMPLATE_RAW=https://raw.githubusercontent.com/$(TEMPLATE_REPO)/$(TEMPLATE_BRANCH)
+
+# Files fully overwritten by `make update`.
+UPDATE_FILES = \
+	Makefile.pyproject \
+	Makefile.venv \
+	.editorconfig \
+	mypy.ini \
+	.pylintrc \
+	.isort.cfg \
+	.github/dependabot.yml \
+	.github/workflows/test.yml \
+	.github/workflows/publish.yml
+
+.PHONY: update-pyproject
+update-pyproject: update-files update-gitignore update-strip
+	@echo "Template files updated from $(TEMPLATE_REPO)@$(TEMPLATE_BRANCH)."
+
+.PHONY: update-files
+update-files:
+	@for f in $(UPDATE_FILES); do \
+		echo "  updating $$f"; \
+		mkdir -p "$$(dirname $$f)"; \
+		curl -fsSL "$(TEMPLATE_RAW)/$$f" -o "$$f.tmp" || { echo "    failed: $$f"; rm -f "$$f.tmp"; exit 1; }; \
+		mv "$$f.tmp" "$$f"; \
+	done
+
+.PHONY: update-gitignore
+update-gitignore:
+	@echo "  updating .gitignore (managed region only)"
+	@curl -fsSL "$(TEMPLATE_RAW)/.gitignore" -o .gitignore.tmpl
+	@if [ ! -f .gitignore ]; then \
+		mv .gitignore.tmpl .gitignore; \
+	elif grep -qF '# === pyproject-tmpl: end managed region ===' .gitignore; then \
+		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' .gitignore > .gitignore.tail; \
+		cat .gitignore.tmpl .gitignore.tail > .gitignore; \
+		rm -f .gitignore.tmpl .gitignore.tail; \
+	else \
+		echo "    .gitignore has no markers; prepending managed region (existing content preserved below)"; \
+		cat .gitignore.tmpl .gitignore > .gitignore.new; \
+		mv .gitignore.new .gitignore; \
+		rm -f .gitignore.tmpl; \
+		echo "    NOTE: review .gitignore for patterns now duplicated above and below the managed region."; \
+	fi
+
+.PHONY: update-strip
+update-strip:
+	@if grep -qE '^\[tool\.(mypy|pylint|isort|black)' pyproject.toml; then \
+		echo "  stripping [tool.mypy|pylint|isort|black] sections from pyproject.toml (moved to dotfiles)"; \
+		awk 'BEGIN{skip=0} /^\[/{skip=($$0 ~ /^\[tool\.(mypy|pylint|isort|black)/)} !skip' pyproject.toml > pyproject.toml.new; \
+		mv pyproject.toml.new pyproject.toml; \
+	fi
 
 
 .PHONY: bootstrap
