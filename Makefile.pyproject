@@ -148,8 +148,6 @@ UPDATE_FILES = \
 	mypy.ini \
 	.pylintrc \
 	.isort.cfg \
-	.github/dependabot.yml \
-	.github/workflows/test.yml \
 	.github/workflows/publish.yml
 
 # Two-stage so that updates to Makefile.pyproject/Makefile.venv take effect

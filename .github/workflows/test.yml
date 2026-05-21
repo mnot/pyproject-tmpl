@@ -1,4 +1,3 @@
-# DO NOT EDIT — managed by https://github.com/mnot/pyproject-tmpl, overwritten by `make update`.
 name: Test
 
 on:

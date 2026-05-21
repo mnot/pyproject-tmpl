@@ -30,13 +30,14 @@ The template distinguishes between **project-owned** files (yours to edit freely
 * `pyproject.toml` — project metadata, dependencies, build configuration
 * `MANIFEST.in` — sdist contents
 * `README.md`, `LICENSE.md`, `CONTRIBUTING.md`
+* `.github/dependabot.yml`, `.github/workflows/test.yml` — CI workflows projects routinely customise
 * Your source directory
 
 **Template-managed — do not edit; refreshed by `make update-pyproject`:**
 
 * `Makefile.pyproject`, `Makefile.venv` — shared make rules
 * `mypy.ini`, `.pylintrc`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
-* `.github/dependabot.yml`, `.github/workflows/test.yml`, `.github/workflows/publish.yml` — CI/CD
+* `.github/workflows/publish.yml` — release/publish workflow
 
 **Partially managed (template owns the region between `# === pyproject-tmpl: managed region ===` markers; add project content below the end marker):**
 
