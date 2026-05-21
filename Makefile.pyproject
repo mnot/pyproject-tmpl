@@ -139,10 +139,12 @@ TEMPLATE_REPO?=mnot/pyproject-tmpl
 TEMPLATE_BRANCH?=main
 TEMPLATE_RAW=https://raw.githubusercontent.com/$(TEMPLATE_REPO)/$(TEMPLATE_BRANCH)
 
-# Files fully overwritten by `make update`.
+# Makefiles refreshed in stage 1 (so the recursive $(MAKE) call below picks
+# up the new recipes for the rest of the update).
+UPDATE_MAKEFILES = Makefile.pyproject Makefile.venv
+
+# Other files fully overwritten in stage 2.
 UPDATE_FILES = \
-	Makefile.pyproject \
-	Makefile.venv \
 	mypy.ini \
 	.pylintrc \
 	.isort.cfg \
@@ -150,8 +152,20 @@ UPDATE_FILES = \
 	.github/workflows/test.yml \
 	.github/workflows/publish.yml
 
+# Two-stage so that updates to Makefile.pyproject/Makefile.venv take effect
+# in the same run: stage 1 refreshes the makefiles, then a recursive $(MAKE)
+# re-reads them and executes the rest of the update.
 .PHONY: update-pyproject
-update-pyproject: update-files update-gitignore update-editorconfig update-strip
+update-pyproject:
+	@for f in $(UPDATE_MAKEFILES); do \
+		echo "  updating $$f"; \
+		curl -fsSL "$(TEMPLATE_RAW)/$$f" -o "$$f.tmp" || { echo "    failed: $$f"; rm -f "$$f.tmp"; exit 1; }; \
+		mv "$$f.tmp" "$$f"; \
+	done
+	@$(MAKE) --no-print-directory update-pyproject-rest
+
+.PHONY: update-pyproject-rest
+update-pyproject-rest: update-files update-gitignore update-editorconfig update-strip
 	@echo "Template files updated from $(TEMPLATE_REPO)@$(TEMPLATE_BRANCH)."
 
 .PHONY: update-files
