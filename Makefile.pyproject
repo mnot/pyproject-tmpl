@@ -143,7 +143,6 @@ TEMPLATE_RAW=https://raw.githubusercontent.com/$(TEMPLATE_REPO)/$(TEMPLATE_BRANC
 UPDATE_FILES = \
 	Makefile.pyproject \
 	Makefile.venv \
-	.editorconfig \
 	mypy.ini \
 	.pylintrc \
 	.isort.cfg \
@@ -152,7 +151,7 @@ UPDATE_FILES = \
 	.github/workflows/publish.yml
 
 .PHONY: update-pyproject
-update-pyproject: update-files update-gitignore update-strip
+update-pyproject: update-files update-gitignore update-editorconfig update-strip
 	@echo "Template files updated from $(TEMPLATE_REPO)@$(TEMPLATE_BRANCH)."
 
 .PHONY: update-files
@@ -180,6 +179,24 @@ update-gitignore:
 		mv .gitignore.new .gitignore; \
 		rm -f .gitignore.tmpl; \
 		echo "    NOTE: review .gitignore for patterns now duplicated above and below the managed region."; \
+	fi
+
+.PHONY: update-editorconfig
+update-editorconfig:
+	@echo "  updating .editorconfig (managed region only)"
+	@curl -fsSL "$(TEMPLATE_RAW)/.editorconfig" -o .editorconfig.tmpl
+	@if [ ! -f .editorconfig ]; then \
+		mv .editorconfig.tmpl .editorconfig; \
+	elif grep -qF '# === pyproject-tmpl: end managed region ===' .editorconfig; then \
+		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' .editorconfig > .editorconfig.tail; \
+		cat .editorconfig.tmpl .editorconfig.tail > .editorconfig; \
+		rm -f .editorconfig.tmpl .editorconfig.tail; \
+	else \
+		echo "    .editorconfig has no markers; prepending managed region (existing content preserved below)"; \
+		cat .editorconfig.tmpl .editorconfig > .editorconfig.new; \
+		mv .editorconfig.new .editorconfig; \
+		rm -f .editorconfig.tmpl; \
+		echo "    NOTE: review .editorconfig for sections now duplicated above and below the managed region."; \
 	fi
 
 .PHONY: update-strip

@@ -1,4 +1,4 @@
-# DO NOT EDIT — managed by https://github.com/mnot/pyproject-tmpl, overwritten by `make update`.
+# === pyproject-tmpl: managed region (do not edit; overwritten by `make update-pyproject`) ===
 # top-most EditorConfig file
 root = true
 
@@ -20,3 +20,6 @@ indent_size = 2
 
 [*.html]
 max_line_length = unset
+# === pyproject-tmpl: end managed region ===
+
+# Add project-specific sections below this line.

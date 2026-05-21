@@ -35,13 +35,13 @@ The template distinguishes between **project-owned** files (yours to edit freely
 **Template-managed — do not edit; refreshed by `make update-pyproject`:**
 
 * `Makefile.pyproject`, `Makefile.venv` — shared make rules
-* `.editorconfig` — editor settings
 * `mypy.ini`, `.pylintrc`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
 * `.github/dependabot.yml`, `.github/workflows/test.yml`, `.github/workflows/publish.yml` — CI/CD
 
-**Partially managed:**
+**Partially managed (template owns the region between `# === pyproject-tmpl: managed region ===` markers; add project content below the end marker):**
 
-* `.gitignore` — the template owns the region between the `# === pyproject-tmpl: managed region ===` markers. Add project-specific patterns below the end marker; they will be preserved across updates.
+* `.gitignore` — project-specific ignore patterns
+* `.editorconfig` — project-specific editor sections
 
 ## Updating
 
