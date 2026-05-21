@@ -136,9 +136,11 @@ bootstrap:
 	@read -p "Project Name (e.g., myproject): " NAME; \
 	read -p "Description: " DESC; \
 	read -p "Project URL: " URL; \
-	find . -type f -not -path './.git/*' -not -name 'Makefile.pyproject' -exec sed -i "" -e "s,SHORTNAME,$$NAME,g" -e "s,DESCRIPTION,$$DESC,g" -e "s,PROJECT_URL,$$URL,g" {} +; \
-	mv SHORTNAME $$NAME; \
-	echo "Project initialized as $$NAME."
+	PKG=$$(echo "$$NAME" | tr '-' '_'); \
+	find . -type f -not -path './.git/*' -not -name 'Makefile.pyproject' -exec sed -i "" -e "s,SHORTNAME,$$PKG,g" -e "s,DESCRIPTION,$$DESC,g" -e "s,PROJECT_URL,$$URL,g" {} +; \
+	sed -i "" "s,^name = \"$$PKG\"\$$,name = \"$$NAME\"," pyproject.toml; \
+	mv SHORTNAME $$PKG; \
+	echo "Project initialized as $$NAME (package: $$PKG)."
 
 
 include Makefile.venv
