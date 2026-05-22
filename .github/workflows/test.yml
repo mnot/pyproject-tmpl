@@ -1,3 +1,4 @@
+# DO NOT EDIT — managed by https://github.com/mnot/pyproject-tmpl, overwritten by `make update-pyproject`.
 name: Test
 
 on:
@@ -33,3 +34,6 @@ jobs:
       run: make typecheck
     - name: Lint
       run: make lint
+    - name: Test
+      run: make test
+# === pyproject-tmpl: end managed region ===

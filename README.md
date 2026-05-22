@@ -30,7 +30,7 @@ The template distinguishes between **project-owned** files (yours to edit freely
 * `pyproject.toml` — project metadata, dependencies, build configuration
 * `MANIFEST.in` — sdist contents
 * `README.md`, `LICENSE.md`, `CONTRIBUTING.md`
-* `.github/dependabot.yml`, `.github/workflows/test.yml` — CI workflows projects routinely customise
+* `.github/dependabot.yml` — Dependabot config, routinely extended with more ecosystems
 * Your source directory
 
 **Template-managed — do not edit; refreshed by `make update-pyproject`:**
@@ -43,6 +43,7 @@ The template distinguishes between **project-owned** files (yours to edit freely
 
 * `.gitignore` — project-specific ignore patterns
 * `.editorconfig` — project-specific editor sections
+* `.github/workflows/test.yml` — project-specific post-test steps (e.g. coverage upload, artifact upload). Add them as additional list items below the end marker, at the same indentation as the template's steps.
 
 ## Updating
 

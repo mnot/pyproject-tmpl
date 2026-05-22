@@ -166,7 +166,7 @@ update-pyproject:
 	@$(MAKE) --no-print-directory update-pyproject-rest
 
 .PHONY: update-pyproject-rest
-update-pyproject-rest: update-files update-gitignore update-editorconfig update-strip
+update-pyproject-rest: update-files update-gitignore update-editorconfig update-test-yml update-strip
 	@echo "Template files updated from $(TEMPLATE_REPO)@$(TEMPLATE_BRANCH)."
 
 .PHONY: update-files
@@ -178,41 +178,40 @@ update-files:
 		mv "$$f.tmp" "$$f"; \
 	done
 
+# $(call partial_update,<file>): refresh the template-managed region of <file>,
+# preserving any content the project added below the end marker. If the file
+# is absent, it's written fresh. If it has no markers, the managed region is
+# prepended (existing content kept as the tail; the user is told to dedupe).
+define partial_update
+	@echo "  updating $(1) (managed region only)"
+	@mkdir -p "$$(dirname $(1))"
+	@curl -fsSL "$(TEMPLATE_RAW)/$(1)" -o "$(1).tmpl"
+	@if [ ! -f $(1) ]; then \
+		mv $(1).tmpl $(1); \
+	elif grep -qF '# === pyproject-tmpl: end managed region ===' $(1); then \
+		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' $(1) > $(1).tail; \
+		cat $(1).tmpl $(1).tail > $(1); \
+		rm -f $(1).tmpl $(1).tail; \
+	else \
+		echo "    $(1) has no markers; prepending managed region (existing content preserved below)"; \
+		cat $(1).tmpl $(1) > $(1).new; \
+		mv $(1).new $(1); \
+		rm -f $(1).tmpl; \
+		echo "    NOTE: review $(1) for content now duplicated above and below the managed region."; \
+	fi
+endef
+
 .PHONY: update-gitignore
 update-gitignore:
-	@echo "  updating .gitignore (managed region only)"
-	@curl -fsSL "$(TEMPLATE_RAW)/.gitignore" -o .gitignore.tmpl
-	@if [ ! -f .gitignore ]; then \
-		mv .gitignore.tmpl .gitignore; \
-	elif grep -qF '# === pyproject-tmpl: end managed region ===' .gitignore; then \
-		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' .gitignore > .gitignore.tail; \
-		cat .gitignore.tmpl .gitignore.tail > .gitignore; \
-		rm -f .gitignore.tmpl .gitignore.tail; \
-	else \
-		echo "    .gitignore has no markers; prepending managed region (existing content preserved below)"; \
-		cat .gitignore.tmpl .gitignore > .gitignore.new; \
-		mv .gitignore.new .gitignore; \
-		rm -f .gitignore.tmpl; \
-		echo "    NOTE: review .gitignore for patterns now duplicated above and below the managed region."; \
-	fi
+	$(call partial_update,.gitignore)
 
 .PHONY: update-editorconfig
 update-editorconfig:
-	@echo "  updating .editorconfig (managed region only)"
-	@curl -fsSL "$(TEMPLATE_RAW)/.editorconfig" -o .editorconfig.tmpl
-	@if [ ! -f .editorconfig ]; then \
-		mv .editorconfig.tmpl .editorconfig; \
-	elif grep -qF '# === pyproject-tmpl: end managed region ===' .editorconfig; then \
-		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' .editorconfig > .editorconfig.tail; \
-		cat .editorconfig.tmpl .editorconfig.tail > .editorconfig; \
-		rm -f .editorconfig.tmpl .editorconfig.tail; \
-	else \
-		echo "    .editorconfig has no markers; prepending managed region (existing content preserved below)"; \
-		cat .editorconfig.tmpl .editorconfig > .editorconfig.new; \
-		mv .editorconfig.new .editorconfig; \
-		rm -f .editorconfig.tmpl; \
-		echo "    NOTE: review .editorconfig for sections now duplicated above and below the managed region."; \
-	fi
+	$(call partial_update,.editorconfig)
+
+.PHONY: update-test-yml
+update-test-yml:
+	$(call partial_update,.github/workflows/test.yml)
 
 define UPDATE_PYTHON_TARGETS_SCRIPT
 import datetime, json, pathlib, re, sys, urllib.request

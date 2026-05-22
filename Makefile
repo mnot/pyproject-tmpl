@@ -13,6 +13,9 @@ typecheck: typecheck_py
 .PHONY: tidy
 tidy: tidy_py
 
+.PHONY: test
+test:
+	@echo "No tests configured. Replace this recipe in Makefile to enable."
 
 
 include Makefile.pyproject
