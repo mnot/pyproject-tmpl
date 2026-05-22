@@ -257,9 +257,9 @@ update-python-targets: venv
 
 .PHONY: update-strip
 update-strip:
-	@if grep -qE '^\[tool\.(mypy|pylint|isort|black)' pyproject.toml; then \
-		echo "  stripping [tool.mypy|pylint|isort|black] sections from pyproject.toml (moved to dotfiles)"; \
-		awk 'BEGIN{skip=0} /^\[/{skip=($$0 ~ /^\[tool\.(mypy|pylint|isort|black)/)} !skip' pyproject.toml > pyproject.toml.new; \
+	@if grep -qE '^\[tool\.(mypy|pylint|isort)' pyproject.toml; then \
+		echo "  stripping [tool.mypy|pylint|isort] sections from pyproject.toml (moved to dotfiles)"; \
+		awk 'BEGIN{skip=0} /^\[/{skip=($$0 ~ /^\[tool\.(mypy|pylint|isort)/)} !skip' pyproject.toml > pyproject.toml.new; \
 		mv pyproject.toml.new pyproject.toml; \
 	fi
 

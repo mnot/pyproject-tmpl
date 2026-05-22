@@ -47,7 +47,12 @@ include-package-data = true
 [tool.setuptools.package-data]
 SHORTNAME = ["py.typed"]
 
-# Tool configuration lives in dedicated files (managed by the template):
+# Most tool configuration lives in dedicated files (managed by the template):
 #   mypy   → mypy.ini
 #   pylint → .pylintrc
 #   isort  → .isort.cfg
+# Black is the exception: it only reads pyproject.toml, so its config
+# stays here and is project-owned.
+
+[tool.black]
+line-length = 100

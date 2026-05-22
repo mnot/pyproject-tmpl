@@ -53,4 +53,4 @@ To pull the latest template-managed files into an existing project:
 make update-pyproject
 ```
 
-This fetches files from `https://github.com/mnot/pyproject-tmpl` (overridable via `TEMPLATE_REPO` and `TEMPLATE_BRANCH`), rewrites only the managed region of `.gitignore`, and strips any leftover `[tool.mypy|pylint|isort|black]` sections from `pyproject.toml` (they now live in dedicated dotfiles).
+This fetches files from `https://github.com/mnot/pyproject-tmpl` (overridable via `TEMPLATE_REPO` and `TEMPLATE_BRANCH`), rewrites only the managed regions of `.gitignore`, `.editorconfig`, and `.github/workflows/test.yml`, and strips any leftover `[tool.mypy|pylint|isort]` sections from `pyproject.toml` (they now live in dedicated dotfiles). `[tool.black]` stays in `pyproject.toml` because black does not read any other config file.
