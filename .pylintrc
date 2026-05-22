@@ -24,6 +24,7 @@ max-branches = 25
 max-statements = 100
 max-attributes = 40
 min-public-methods = 1
+max-positional-arguments=10
 
 [SIMILARITIES]
 min-similarity-lines = 10
