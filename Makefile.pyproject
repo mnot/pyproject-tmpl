@@ -178,27 +178,83 @@ update-files:
 		mv "$$f.tmp" "$$f"; \
 	done
 
-# $(call partial_update,<file>): refresh the template-managed region of <file>,
-# preserving any content the project added below the end marker. If the file
-# is absent, it's written fresh. If it has no markers, the managed region is
-# prepended (existing content kept as the tail; the user is told to dedupe).
+# Refresh a template-managed file that contains named project regions.
+# Each file is mostly template-controlled; explicit start/end markers wrap
+# regions whose content the project owns. On update, the file is rewritten
+# from the template, but the local content of each named region is spliced
+# back in. Local regions without a matching slot in the new template are
+# warned about and dropped.
+define PARTIAL_UPDATE_SCRIPT
+import pathlib, re, sys
+
+START_RE = re.compile(r'\s*# === pyproject-tmpl: start "([^"]+)" ===\s*')
+END_RE = re.compile(r'\s*# === pyproject-tmpl: end "([^"]+)" ===\s*')
+
+def extract(text):
+    out = {}
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        m = START_RE.fullmatch(lines[i])
+        if m:
+            name = m.group(1)
+            j = i + 1
+            while j < len(lines):
+                em = END_RE.fullmatch(lines[j])
+                if em and em.group(1) == name:
+                    out[name] = lines[i+1:j]
+                    i = j
+                    break
+                j += 1
+            else:
+                sys.exit(f"ERROR: region {name!r} not closed in {sys.argv[1]}")
+        i += 1
+    return out
+
+def merge(template_text, local_regions):
+    lines = template_text.splitlines()
+    out, seen = [], set()
+    i = 0
+    while i < len(lines):
+        m = START_RE.fullmatch(lines[i])
+        if m:
+            name = m.group(1)
+            seen.add(name)
+            out.append(lines[i])
+            j = i + 1
+            while j < len(lines):
+                em = END_RE.fullmatch(lines[j])
+                if em and em.group(1) == name:
+                    out.extend(local_regions.get(name, lines[i+1:j]))
+                    out.append(lines[j])
+                    i = j
+                    break
+                j += 1
+            else:
+                sys.exit(f"ERROR: template region {name!r} not closed")
+        else:
+            out.append(lines[i])
+        i += 1
+    return seen, out
+
+local = pathlib.Path(sys.argv[1])
+tmpl = pathlib.Path(sys.argv[2])
+local_regions = extract(local.read_text()) if local.exists() else {}
+seen, merged = merge(tmpl.read_text(), local_regions)
+for orphan in sorted(set(local_regions) - seen):
+    print(f"  WARNING: {local}: local region {orphan!r} has no slot in template; content dropped", file=sys.stderr)
+local.write_text("\n".join(merged) + "\n")
+endef
+export PARTIAL_UPDATE_SCRIPT
+
+# $(call partial_update,<file>) — refresh <file> while preserving any
+# project-owned start/end regions in its current content.
 define partial_update
-	@echo "  updating $(1) (managed region only)"
+	@echo "  updating $(1)"
 	@mkdir -p "$$(dirname $(1))"
 	@curl -fsSL "$(TEMPLATE_RAW)/$(1)" -o "$(1).tmpl"
-	@if [ ! -f $(1) ]; then \
-		mv $(1).tmpl $(1); \
-	elif grep -qF '# === pyproject-tmpl: end managed region ===' $(1); then \
-		awk '/^# === pyproject-tmpl: end managed region ===$$/ {p=1; next} p' $(1) > $(1).tail; \
-		cat $(1).tmpl $(1).tail > $(1); \
-		rm -f $(1).tmpl $(1).tail; \
-	else \
-		echo "    $(1) has no markers; prepending managed region (existing content preserved below)"; \
-		cat $(1).tmpl $(1) > $(1).new; \
-		mv $(1).new $(1); \
-		rm -f $(1).tmpl; \
-		echo "    NOTE: review $(1) for content now duplicated above and below the managed region."; \
-	fi
+	@python3 -c "$$PARTIAL_UPDATE_SCRIPT" "$(1)" "$(1).tmpl"
+	@rm -f "$(1).tmpl"
 endef
 
 .PHONY: update-gitignore

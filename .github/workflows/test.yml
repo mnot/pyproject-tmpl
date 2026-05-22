@@ -1,4 +1,4 @@
-# DO NOT EDIT — managed by https://github.com/mnot/pyproject-tmpl, overwritten by `make update-pyproject`.
+# DO NOT EDIT outside marked project regions — managed by https://github.com/mnot/pyproject-tmpl
 name: Test
 
 on:
@@ -19,6 +19,8 @@ jobs:
     - uses: actions/checkout@v6
       with:
         submodules: 'true'
+    # === pyproject-tmpl: start "pre-test" ===
+    # === pyproject-tmpl: end "pre-test" ===
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -36,4 +38,5 @@ jobs:
       run: make lint
     - name: Test
       run: make test
-# === pyproject-tmpl: end managed region ===
+    # === pyproject-tmpl: start "post-test" ===
+    # === pyproject-tmpl: end "post-test" ===

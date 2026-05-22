@@ -39,11 +39,13 @@ The template distinguishes between **project-owned** files (yours to edit freely
 * `mypy.ini`, `.pylintrc`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
 * `.github/workflows/publish.yml` — release/publish workflow
 
-**Partially managed (template owns the region between `# === pyproject-tmpl: managed region ===` markers; add project content below the end marker):**
+**Mostly template-managed, with project regions:** the template controls the file; explicit `# === pyproject-tmpl: start "<name>" ===` / `# === pyproject-tmpl: end "<name>" ===` blocks mark slots where projects insert their own content. On update, everything outside the regions is refreshed from the template; content inside each named region is preserved (matched by name, not position).
 
-* `.gitignore` — project-specific ignore patterns
-* `.editorconfig` — project-specific editor sections
-* `.github/workflows/test.yml` — project-specific post-test steps (e.g. coverage upload, artifact upload). Add them as additional list items below the end marker, at the same indentation as the template's steps.
+* `.gitignore` — region `"extras"` for project-specific ignore patterns.
+* `.editorconfig` — region `"extras"` for project-specific sections.
+* `.github/workflows/test.yml` — region `"pre-test"` (steps that run before the standard Python setup, e.g. `setup-node`, Playwright cache) and region `"post-test"` (steps that run after `make test`, e.g. artifact upload, coverage).
+
+If a future template removes a region your project was using, `make update-pyproject` prints a warning and drops the orphaned content.
 
 ## Updating
 
