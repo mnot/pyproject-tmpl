@@ -237,17 +237,42 @@ def merge(template_text, local_regions):
         i += 1
     return seen, out
 
+def skeleton(text):
+    """Return text with region bodies stripped, keeping the start/end markers."""
+    lines = text.splitlines()
+    out = []
+    i = 0
+    while i < len(lines):
+        m = START_RE.fullmatch(lines[i])
+        if m:
+            name = m.group(1)
+            out.append(lines[i])
+            j = i + 1
+            while j < len(lines):
+                em = END_RE.fullmatch(lines[j])
+                if em and em.group(1) == name:
+                    out.append(lines[j])
+                    i = j
+                    break
+                j += 1
+            else:
+                break
+        else:
+            out.append(lines[i])
+        i += 1
+    return "\n".join(out)
+
 local = pathlib.Path(sys.argv[1])
 tmpl = pathlib.Path(sys.argv[2])
 local_text = local.read_text() if local.exists() else None
 tmpl_text = tmpl.read_text()
 local_regions = extract(local_text) if local_text is not None else {}
-if local_text is not None and not local_regions and local_text != tmpl_text:
+if local_text is not None and skeleton(local_text) != skeleton(tmpl_text):
     if "pyproject-tmpl: managed region" in local_text:
-        hint = "old-style 'managed region' markers detected; copy content from below the end marker into the new named region(s) (see README) and re-run"
+        hint = "old-style 'managed region' markers detected; move content from below the old end marker into a new named region (see README) and re-run"
     else:
-        hint = "wrap your customizations in start/end markers for a named region (see README) and re-run"
-    sys.exit(f"ERROR: {local}: differs from template but has no project regions; {hint}")
+        hint = "out-of-region edits would be overwritten; move them into a named region (see README) and re-run"
+    sys.exit(f"ERROR: {local}: template-managed portion differs from upstream; {hint}")
 seen, merged = merge(tmpl_text, local_regions)
 for orphan in sorted(set(local_regions) - seen):
     print(f"  WARNING: {local}: local region {orphan!r} has no slot in template; content dropped", file=sys.stderr)
