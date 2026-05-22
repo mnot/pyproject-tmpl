@@ -239,8 +239,16 @@ def merge(template_text, local_regions):
 
 local = pathlib.Path(sys.argv[1])
 tmpl = pathlib.Path(sys.argv[2])
-local_regions = extract(local.read_text()) if local.exists() else {}
-seen, merged = merge(tmpl.read_text(), local_regions)
+local_text = local.read_text() if local.exists() else None
+tmpl_text = tmpl.read_text()
+local_regions = extract(local_text) if local_text is not None else {}
+if local_text is not None and not local_regions and local_text != tmpl_text:
+    if "pyproject-tmpl: managed region" in local_text:
+        hint = "old-style 'managed region' markers detected; copy content from below the end marker into the new named region(s) (see README) and re-run"
+    else:
+        hint = "wrap your customizations in start/end markers for a named region (see README) and re-run"
+    sys.exit(f"ERROR: {local}: differs from template but has no project regions; {hint}")
+seen, merged = merge(tmpl_text, local_regions)
 for orphan in sorted(set(local_regions) - seen):
     print(f"  WARNING: {local}: local region {orphan!r} has no slot in template; content dropped", file=sys.stderr)
 local.write_text("\n".join(merged) + "\n")
