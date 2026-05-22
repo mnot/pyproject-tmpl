@@ -267,13 +267,20 @@ tmpl = pathlib.Path(sys.argv[2])
 local_text = local.read_text() if local.exists() else None
 tmpl_text = tmpl.read_text()
 local_regions = extract(local_text) if local_text is not None else {}
-if local_text is not None and skeleton(local_text) != skeleton(tmpl_text):
-    if "pyproject-tmpl: managed region" in local_text:
-        hint = "old-style 'managed region' markers detected; move content from below the old end marker into a new named region (see README) and re-run"
-    else:
-        hint = "out-of-region edits would be overwritten; move them into a named region (see README) and re-run"
-    sys.exit(f"ERROR: {local}: template-managed portion differs from upstream; {hint}")
+needs_migration = local_text is not None and skeleton(local_text) != skeleton(tmpl_text)
 seen, merged = merge(tmpl_text, local_regions)
+if needs_migration:
+    print(f"  NOTE: {local} had out-of-region content; appended below a MIGRATION NEEDED footer for manual triage", file=sys.stderr)
+    merged.extend([
+        "",
+        "# === pyproject-tmpl: MIGRATION NEEDED ===",
+        "# The previous version of this file had content the template no longer",
+        "# manages. It is preserved below as comments. Move what you still want",
+        "# into the appropriate named regions above, then delete this section.",
+        "# ---",
+    ])
+    for line in local_text.splitlines():
+        merged.append("# " + line if line else "#")
 for orphan in sorted(set(local_regions) - seen):
     print(f"  WARNING: {local}: local region {orphan!r} has no slot in template; content dropped", file=sys.stderr)
 local.write_text("\n".join(merged) + "\n")
