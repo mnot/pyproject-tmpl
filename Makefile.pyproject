@@ -206,6 +206,7 @@ import pathlib, re, sys
 
 START_RE = re.compile(r'\s*# === pyproject-tmpl: start "([^"]+)" ===\s*')
 END_RE = re.compile(r'\s*# === pyproject-tmpl: end "([^"]+)" ===\s*')
+MANAGED_RE = re.compile(r'#.*pyproject-tmpl')
 
 def extract(text):
     out = {}
@@ -286,10 +287,13 @@ tmpl_text = tmpl.read_text()
 local_regions = extract(local_text) if local_text is not None else {}
 seen, merged = merge(tmpl_text, local_regions)
 # At-risk lines: present in local outside regions, absent from new template entirely.
-# Blank lines and comment formatting churn don't trigger because set membership ignores
-# duplicates and position; only genuinely unique content shows up.
+# Only checked when adopting a file the template does not already manage; once managed,
+# out-of-region content belongs to the template, so a dropped line is template churn.
 at_risk = []
-if local_text is not None:
+already_managed = local_text is not None and any(
+    MANAGED_RE.search(line) for line in local_text.splitlines()
+)
+if local_text is not None and not already_managed:
     tmpl_lines = set(tmpl_text.splitlines())
     for line in skeleton_lines(local_text):
         stripped = line.strip()
