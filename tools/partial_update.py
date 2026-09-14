@@ -1,4 +1,4 @@
-# === pyproject-tmpl: managed file (do not edit; overwritten by `make update`) ===
+# === pyproject-tmpl: managed file (do not edit; overwritten by `make update-pyproject`) ===
 import pathlib, re, sys
 
 START_RE = re.compile(r'\s*# === pyproject-tmpl: start "([^"]+)" ===\s*')

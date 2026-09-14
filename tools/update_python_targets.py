@@ -1,4 +1,4 @@
-# === pyproject-tmpl: managed file (do not edit; overwritten by `make update`) ===
+# === pyproject-tmpl: managed file (do not edit; overwritten by `make update-pyproject`) ===
 import datetime, json, pathlib, re, sys, urllib.request
 
 with urllib.request.urlopen("https://endoflife.date/api/python.json") as resp:
