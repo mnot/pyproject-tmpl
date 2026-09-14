@@ -36,6 +36,7 @@ The template distinguishes between **project-owned** files (yours to edit freely
 **Template-managed — do not edit; refreshed by `make update-pyproject`:**
 
 * `Makefile.pyproject`, `Makefile.venv` — shared make rules
+* `tools/partial_update.py`, `tools/update_python_targets.py` — helper scripts used by the make rules above
 * `mypy.ini`, `.pylintrc`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
 * `.github/workflows/publish.yml` — release/publish workflow
 
