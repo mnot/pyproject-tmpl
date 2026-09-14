@@ -211,6 +211,10 @@ define partial_update
 	@rm -f "$(1).tmpl"
 endef
 
+# These shell out to tools/partial_update.py, which update-files fetches;
+# order-only so `make -jN` can't run them before it lands on disk.
+update-gitignore update-editorconfig update-test-yml: | update-files
+
 .PHONY: update-gitignore
 update-gitignore:
 	$(call partial_update,.gitignore)
