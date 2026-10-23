@@ -15,9 +15,9 @@
 # tidy_py
 #     Run isort and black on Python files in $PROJECT
 # lint_py
-#     Run pylint on $PROJECT, and validate pyproject.toml
+#     Run ruff on $PROJECT, and validate pyproject.toml
 # typecheck_py
-#     Run mypy on $PROJECT
+#     Run pyrefly on $PROJECT
 # bump-calver
 #     Bump the __version__ in $PROJECT/__init__.py using calver (https://calver.org/)
 # bump-semver[-major,-minor,-micro]
@@ -52,7 +52,7 @@ MONTH=`date +%m`
 .PHONY: clean_py
 clean_py: clean-venv
 	find . -d -type d -name __pycache__ -exec rm -rf {} \;
-	rm -rf build/ dist/ MANIFEST $(PROJECT).egg-info/ .mypy_cache/ *.log changelog.md
+	rm -rf build/ dist/ MANIFEST $(PROJECT).egg-info/ *.log changelog.md
 
 .PHONY: tidy_py
 tidy_py: venv
@@ -61,12 +61,12 @@ tidy_py: venv
 
 .PHONY: lint_py
 lint_py: venv
-	PYTHONPATH=$(VENV) $(VENV)/pylint --output-format=colorized $(PROJECT)
+	$(VENV)/ruff check $(PROJECT)
 	$(VENV)/validate-pyproject pyproject.toml
 
 .PHONY: typecheck_py
 typecheck_py: venv
-	PYTHONPATH=$(VENV) $(VENV)/python -m mypy $(PROJECT)
+	$(VENV)/pyrefly check --python-interpreter-path $(VENV)/python $(PROJECT)
 
 ## Release
 
@@ -165,8 +165,8 @@ UPDATE_MAKEFILES = Makefile.pyproject Makefile.venv
 
 # Other files fully overwritten in stage 2.
 UPDATE_FILES = \
-	mypy.ini \
-	.pylintrc \
+	pyrefly.toml \
+	ruff.toml \
 	.isort.cfg \
 	.github/workflows/publish.yml \
 	tools/partial_update.py \

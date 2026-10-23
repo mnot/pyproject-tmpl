@@ -37,7 +37,7 @@ The template distinguishes between **project-owned** files (yours to edit freely
 
 * `Makefile.pyproject`, `Makefile.venv` — shared make rules
 * `tools/partial_update.py`, `tools/update_python_targets.py` — helper scripts used by the make rules above
-* `mypy.ini`, `.pylintrc`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
+* `pyrefly.toml`, `ruff.toml`, `.isort.cfg` — tool configurations (kept out of `pyproject.toml`)
 * `.github/workflows/publish.yml` — release/publish workflow
 
 **Mostly template-managed, with project regions:** the template controls the file; explicit `# === pyproject-tmpl: start "<name>" ===` / `# === pyproject-tmpl: end "<name>" ===` blocks mark slots where projects insert their own content. On update, everything outside the regions is refreshed from the template; content inside each named region is preserved (matched by name, not position).

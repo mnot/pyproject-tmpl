@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["mypy", "black", "isort", "pylint", "pytest", "pytest-md", "validate-pyproject", "build"]
+dev = ["pyrefly", "black", "isort", "ruff", "pytest", "pytest-md", "validate-pyproject", "build"]
 
 [project.urls]
 homepage = "PROJECT_URL"
@@ -48,9 +48,9 @@ include-package-data = true
 SHORTNAME = ["py.typed"]
 
 # Most tool configuration lives in dedicated files (managed by the template):
-#   mypy   → mypy.ini
-#   pylint → .pylintrc
-#   isort  → .isort.cfg
+#   pyrefly → pyrefly.toml
+#   ruff    → ruff.toml
+#   isort   → .isort.cfg
 # Black is the exception: it only reads pyproject.toml, so its config
 # stays here and is project-owned.
 
